@@ -1,4 +1,5 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
+#TODO Adicionar Vizinhaça
 
 #* Classes
 
@@ -71,6 +72,16 @@ class Grafo:
     def Cadastra_Conexao(self, nova_conexao):
         self.conexoes.append(nova_conexao)
     
+    def Listar_Vizinhanca_Da_Cidade(self, nome_cidade):
+        for cidade in self.cidades:
+            if cidade.nome_cidade == nome_cidade:
+                cidade.Info_Vizinhos()
+    
+    # def Adicionar_Vizinho_Na_Cidade(self, nome_cidade):
+    #     for cidade in self.cidades:
+    #         if cidade.nome_cidade == nome_cidade:
+    #             cidade.Adicionar_Vizinho()
+    
     def Busca_Cidade_Por_Nome(self, nome_cidade):
         for cidade in self.lista_cidades:
             if cidade.nome_cidade == nome_cidade:
@@ -84,6 +95,7 @@ def Verificar_Cidade_Existe(lista_cidades, nome_cidade):
         if cidade.nome_cidade == nome_cidade:
             return True
 
+# Função para a entrada de uma cidade
 def Entrada_De_Cidade():
     try:
         cidade = input(": ")
@@ -114,6 +126,7 @@ def Entrada_De_Cidade():
         print(f"Mensagem de erro: {error}")
         Continuar()
 
+# Função de cadastro de uma cidade
 def Cadastrar_Cidade(grafo):
     running = True
 
@@ -154,11 +167,11 @@ def Cadastrar_Cidade(grafo):
                 Continuar()
                 running = False
 
+# Função de cadastro de uma conexão
 def Cadastrar_Conexao(grafo):
     running = True
     # Criando estas variaveis apenas para
     lista_cidades = grafo.cidades
-    lista_conexoes = grafo.conexoes
 
     while running:
         print("-"*30)
@@ -175,12 +188,12 @@ def Cadastrar_Conexao(grafo):
             
             while recebendo_valores:
                 print("\nDigite o nome da primeira cidade:")
-                cidade_1 = Entrada_De_Cidade()
+                nome_cidade_1 = Entrada_De_Cidade()
                 
-                if cidade_1 == "":
+                if nome_cidade_1 == "":
                     continue
                 else:
-                    cidade_1_existe = Verificar_Cidade_Existe(lista_cidades, cidade_1)
+                    cidade_1_existe = Verificar_Cidade_Existe(lista_cidades, nome_cidade_1)
                     
                     if cidade_1_existe:
                         recebendo_valores = False
@@ -194,12 +207,12 @@ def Cadastrar_Conexao(grafo):
             
             while recebendo_valores:
                 print("\nDigite o nome da segunda cidade:")
-                cidade_2 = Entrada_De_Cidade()
+                nome_cidade_2 = Entrada_De_Cidade()
                 
-                if cidade_2 == "":
+                if nome_cidade_2 == "":
                     continue
                 else:
-                    cidade_2_existe = Verificar_Cidade_Existe(lista_cidades, cidade_2)
+                    cidade_2_existe = Verificar_Cidade_Existe(lista_cidades, nome_cidade_2)
                     
                     if cidade_2_existe:
                         recebendo_valores = False
@@ -216,7 +229,6 @@ def Cadastrar_Conexao(grafo):
                 print("- Utilize Km.")
 
                 try:
-                    #TODO Normalizar a entrada
                     distancia = input(": ").replace(",", ".")
                     
                     distancia = float(distancia)
@@ -235,7 +247,16 @@ def Cadastrar_Conexao(grafo):
                     recebendo_valores = False
 
             try:
-                conexao = Aresta(cidade_1, cidade_2, distancia)
+                conexao = Aresta(nome_cidade_1, nome_cidade_2, distancia)
+
+                #TODO Testar
+                # Buscando os objetos destas cidades
+                cidade_1 = Retornar_Cidade_Usando_Nome(nome_cidade_1)
+                cidade_2 = Retornar_Cidade_Usando_Nome(nome_cidade_2)
+                
+                # Adicionando como vizinhos
+                cidade_1.Adicionar_Vizinho(cidade_2)
+                cidade_2.Adicionar_Vizinho(cidade_1)
 
                 # Adicionando conexão ao grafo, na lista de conexões
                 grafo.Cadastra_Conexao(conexao)
@@ -245,6 +266,12 @@ def Cadastrar_Conexao(grafo):
             except Exception as error:
                 print("\nOcorreu um erro inesperado, não foi possível terminar o cadastro.")
                 print(f"Mensagem de erro: {error}")
+
+# Função que retorna uma cidade do Grafo, recebendo o nome de uma cidade
+def Retornar_Cidade_Usando_Nome(grafo, nome_cidade):
+    for cidade in grafo.cidades:
+        if cidade.nome_cidade == nome_cidade:
+            return cidade
 
 # Função para evitar a apresentação excessiva para o usuário
 def Continuar():
@@ -260,7 +287,6 @@ def Test(grafo):
 
 #* Função Principal
 if __name__ == '__main__':
-    #TODO Retirar as listas, usar apenas o 'grafo'
     grafo = Grafo()
     
     running = True
@@ -307,6 +333,12 @@ if __name__ == '__main__':
         
         elif escolha == 2:
             Cadastrar_Conexao(grafo)
+        
+        elif escolha == 3:
+            grafo.Info_Cidades()
+        
+        elif escolha == 4:
+            grafo.Info_Conexoes()
         
         else:
             print("-"*30)
