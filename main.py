@@ -15,10 +15,10 @@ class Aresta:
 
 # Classe Vértice (Cidade)
 class Vertice:
-    def __init__(self, nome_cidade, vizinhanca=[], conexoes=[]):
+    def __init__(self, nome_cidade):
         self.nome_cidade = nome_cidade
-        self.vizinhanca = vizinhanca
-        self.conexoes = conexoes
+        self.vizinhanca = []
+        self.conexoes = []
 
     def Info_Vertice(self):
         print("-"*30)
@@ -38,12 +38,18 @@ class Vertice:
         
         for conexao in self.conexoes:
             conexao.Info_Aresta()
+    
+    def Adicionar_Vizinho(self, novo_vizinho):
+        self.vizinhanca.append(novo_vizinho)
+
+    def Adicionar_Conexao(self, nova_conexao):
+        self.conexoes.append(nova_conexao)
 
 # Classe Grafo (Mapa)
 class Grafo:
     def __init__(self, cidades=[], conexoes=[]):
-        self.cidades = cidades
-        self.conexoes = conexoes
+        self.cidades = []
+        self.conexoes = []
     
     def Info_Cidades(self):
         print("-"*30)
@@ -52,7 +58,7 @@ class Grafo:
             print("-"*15)
             cidade.Info_Vertice()
     
-    def Info_conexoes(self):
+    def Info_Conexoes(self):
         print("-"*30)
         
         for conexao in self.conexoes:
@@ -64,6 +70,11 @@ class Grafo:
     
     def Cadastra_Conexao(self, nova_conexao):
         self.conexoes.append(nova_conexao)
+    
+    def Busca_Cidade_Por_Nome(self, nome_cidade):
+        for cidade in self.lista_cidades:
+            if cidade.nome_cidade == nome_cidade:
+                return cidade
 
 #* Funções
 
@@ -103,7 +114,7 @@ def Entrada_De_Cidade():
         print(f"Mensagem de erro: {error}")
         Continuar()
 
-def Cadastrar_Cidade(lista_cidades):
+def Cadastrar_Cidade(grafo):
     running = True
 
     while running:
@@ -117,13 +128,14 @@ def Cadastrar_Cidade(lista_cidades):
         if nome_cidade == "":
             continue
         else:
-            cidade_existe = Verificar_Cidade_Existe(lista_cidades, nome_cidade)
+            cidade_existe = Verificar_Cidade_Existe(grafo, nome_cidade)
             
             if not cidade_existe:
                 print("Cadastrando cidade...")
                 
                 try:
-                    lista_cidades.append(Vertice(nome_cidade))
+                    cidade = Vertice(nome_cidade)
+                    grafo.Cadastra_Cidade(cidade)
                     
                     print("\nCidade cadastrada com sucesso.")
                     Continuar()
@@ -142,48 +154,114 @@ def Cadastrar_Cidade(lista_cidades):
                 Continuar()
                 running = False
 
-def Cadastrar_Conexao(lista_cidades, lista_conexoes):
+def Cadastrar_Conexao(grafo):
     running = True
+    # Criando estas variaveis apenas para
+    lista_cidades = grafo.cidades
+    lista_conexoes = grafo.conexoes
 
     while running:
         print("-"*30)
-        print("Cadastro de uma Conexão\n")
+        print("Cadastro de uma Conexão")
         
         if len(lista_cidades) < 2: # Se não existir Cidades o suficiente
             print("-"*30)
-            print("Não há cidades suficientes para criar uma conexão.")
+            print("\nNão há cidades suficientes para criar uma conexão.")
             print("Adicione mais cidades antes desta conexão.\n")
             Continuar()
             running = False
         else:
-            print("Digite o nome da primeira cidade:")
-            cidade_1 = Entrada_De_Cidade()
-            cidade_1_existe = Verificar_Cidade_Existe(lista_cidades)
+            recebendo_valores = True
             
-            if cidade_1 != "" and cidade_1_existe:
-                print("Digite o nome da segunda cidade:")
-                cidade_2 = Entrada_De_Cidade()
-                cidade_2_existe = Verificar_Cidade_Existe
+            while recebendo_valores:
+                print("\nDigite o nome da primeira cidade:")
+                cidade_1 = Entrada_De_Cidade()
                 
-                if cidade_2 != "" and cidade_2_existe:
-                    print("Digite a distância entre estas cidades:")
-                    print("- Utilize Km")
-                    distancia = float(input(": "))
+                if cidade_1 == "":
+                    continue
+                else:
+                    cidade_1_existe = Verificar_Cidade_Existe(lista_cidades, cidade_1)
+                    
+                    if cidade_1_existe:
+                        recebendo_valores = False
+                    else:
+                        print("\nNão foi possível continuar com o cadastro.")
+                        print("Esta cidade não existe na lista local.")
+                        Continuar()
+                        continue
 
+            recebendo_valores = True
+            
+            while recebendo_valores:
+                print("\nDigite o nome da segunda cidade:")
+                cidade_2 = Entrada_De_Cidade()
+                
+                if cidade_2 == "":
+                    continue
+                else:
+                    cidade_2_existe = Verificar_Cidade_Existe(lista_cidades, cidade_2)
+                    
+                    if cidade_2_existe:
+                        recebendo_valores = False
+                    else:
+                        print("Não foi possível continuar com o cadastro.")
+                        print("Esta cidade não existe na lista local.")
+                        Continuar()
+                        continue
+            
+            recebendo_valores = True
+            
+            while recebendo_valores:
+                print("\nDigite a distância entre estas cidades:")
+                print("- Utilize Km.")
+
+                try:
+                    #TODO Normalizar a entrada
+                    distancia = input(": ").replace(",", ".")
+                    
+                    distancia = float(distancia)
+
+                except ValueError:
+                    print("-"*30)
+                    print("\nOcorreu um erro com o valor da distância.")
+                    print("Utilize apenas números inteiros ou flutuantes.")
+                    Continuar()
+                    continue
+
+                if not distancia or distancia < 0: # Se 'distância' não existe ou se for negativo
+                    print("Não foi possível continuar com o cadastro.")
+                    print("Verifique se: A entrada possui valores ou a cidade existe na lista local.")
+                else:
+                    recebendo_valores = False
+
+            try:
+                conexao = Aresta(cidade_1, cidade_2, distancia)
+
+                # Adicionando conexão ao grafo, na lista de conexões
+                grafo.Cadastra_Conexao(conexao)
+                print("\nCadastro realizado com sucesso.")
+                Continuar()
+                running = False
+            except Exception as error:
+                print("\nOcorreu um erro inesperado, não foi possível terminar o cadastro.")
+                print(f"Mensagem de erro: {error}")
+
+# Função para evitar a apresentação excessiva para o usuário
 def Continuar():
     print("-"*30)
     input("Continuar...")
 
-def Test(lista_cidades):
-    for cidade in lista_cidades:
-        cidade.Info_Vertice()
+# Função de teste, vai ser removida futuramente
+def Test(grafo):
+    grafo.cidades.append(Vertice("Test"))
+    grafo.cidades.append(Vertice("Teste"))
     
     Continuar()
 
 #* Função Principal
 if __name__ == '__main__':
-    lista_cidades = []
-    lista_conexoes = []
+    #TODO Retirar as listas, usar apenas o 'grafo'
+    grafo = Grafo()
     
     running = True
 
@@ -217,18 +295,18 @@ if __name__ == '__main__':
             continue
         
         if escolha == 10:
-            Test(lista_cidades)
+            Test(grafo)
         
-        if escolha == 0:
+        elif escolha == 0:
             print("-"*30)
             print("Saindo...")
             Continuar()
             running = False
         elif escolha == 1:
-            Cadastrar_Cidade(lista_cidades)
+            Cadastrar_Cidade(grafo)
         
         elif escolha == 2:
-            Cadastrar_Conexao(lista_cidades, lista_conexoes)
+            Cadastrar_Conexao(grafo)
         
         else:
             print("-"*30)
