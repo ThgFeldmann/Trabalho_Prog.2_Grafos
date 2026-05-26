@@ -28,9 +28,18 @@ class Vertice:
 
     def Info_Vizinhos(self):
         print("-"*30)
+        lista_vizinhos = []
         
+        # Separando os vizinhos
         for vizinho in self.vizinhanca:
-            vizinho.Info_Vertice()
+            lista_vizinhos.append(vizinho)
+        
+        # Buscando a distância entre esses vizinhos
+        for conexao in self.conexoes:
+            if conexao.cidade_1 in lista_vizinhos: # Se 'cidade_1' for vizinho
+                print(f"{conexao.cidade_1} - {conexao.distancia}")
+            elif conexao.cidade_2 in lista_vizinhos: # Se 'cidade_2' for vizinho
+                print(f"{conexao.cidade_2} - {conexao.distancia}")
     
     def Info_Conexoes(self):
         print("-"*30)
@@ -75,6 +84,11 @@ class Grafo:
         self.conexoes.append(nova_conexao)
     
     def Listar_Vizinhanca_Da_Cidade(self, nome_cidade):
+        #TODO Usar lista de vizinhos
+        #TODO deve listar neste formato "<nome vizinho> - <distancia>"
+        #TODO deve ser ordenado pela menor distância
+        #TODO Usar lista de conexões
+
         for cidade in self.cidades:
             if cidade.nome_cidade == nome_cidade:
                 cidade.Info_Vizinhos()
@@ -246,13 +260,16 @@ def Cadastrar_Conexao(grafo):
                 conexao = Aresta(nome_cidade_1, nome_cidade_2, distancia)
 
                 #TODO Testar
-                # Buscando os objetos destas cidades
+                # Buscando os objetos destas cidades no Grafo
                 cidade_1 = grafo.Busca_Cidade_Por_Nome(nome_cidade_1)
                 cidade_2 = grafo.Busca_Cidade_Por_Nome(nome_cidade_2)
-                
-                # Adicionando como vizinhos
+
+                # Adicionando Vizinhos
                 cidade_1.Adicionar_Vizinho(cidade_2)
                 cidade_2.Adicionar_Vizinho(cidade_1)
+
+                cidade_1.Adicionar_Conexao(conexao)
+                cidade_2.Adicionar_Conexao(conexao)
 
                 # Adicionando conexão ao grafo, na lista de conexões
                 grafo.Cadastra_Conexao(conexao)
@@ -278,27 +295,21 @@ def Listar_Vizinhos(grafo):
         else:
             cidade_existe = grafo.Verificar_Cidade_Existe(nome_cidade)
             
-            if not cidade_existe:
-                print("")
-                
+            if cidade_existe:
                 try:
-                    cidade = Vertice(nome_cidade)
-                    grafo.Cadastra_Cidade(cidade)
-                    
-                    print("\n")
+                    grafo.Listar_Vizinhanca_Da_Cidade(nome_cidade)
                     Continuar()
-                    
                     running = False
                 except Exception as error:
                     print("-"*30)
-                    print("Ocorreu um erro inesperado durante o cadastro da cidade.")
-                    print("Tente novamente.")
+                    print("\nOcorreu um erro inesperado. Tente novamente.")
+                    print(f"\nMensagem de erro: {error}")
                     Continuar()
                     continue
 
             else:
-                print("\nEsta cidade já existe na lista de cidades.")
-                print("Encerrando o cadastro...")
+                print("\nEsta cidade não existe na lista de cidades.")
+                print("\nEncerrando a busca...")
                 Continuar()
                 running = False
 
@@ -311,6 +322,7 @@ def Continuar():
 def Test(grafo):
     grafo.cidades.append(Vertice("Test"))
     grafo.cidades.append(Vertice("Teste"))
+    grafo.cidades.append(Vertice("Cidade"))
     
     Continuar()
 
@@ -370,7 +382,7 @@ if __name__ == '__main__':
             grafo.Info_Conexoes()
         
         elif escolha == 5:
-            grafo.Listar_Vizinhanca_Da_Cidade()
+            Listar_Vizinhos(grafo)
         
         else:
             print("-"*30)
