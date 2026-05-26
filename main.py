@@ -54,10 +54,13 @@ class Grafo:
     
     def Info_Cidades(self):
         print("-"*30)
+        lista_alfabetica = sorted(self.cidades, key=lambda cidade: cidade.nome_cidade)
         
-        for cidade in self.cidades:
+        for cidade in lista_alfabetica:
             print("-"*15)
             cidade.Info_Vertice()
+
+        Continuar()
     
     def Info_Conexoes(self):
         print("-"*30)
@@ -65,6 +68,8 @@ class Grafo:
         for conexao in self.conexoes:
             print("-"*15)
             conexao.Info_Aresta()
+    
+        Continuar()
     
     def Cadastra_Cidade(self, nova_cidade):
         self.cidades.append(nova_cidade)
@@ -81,14 +86,13 @@ class Grafo:
         for cidade in self.cidades:
             if cidade.nome_cidade == nome_cidade:
                 return cidade
+    
+    def Verificar_Cidade_Existe(self, nome_cidade):
+        for cidade in self.cidades:
+            if cidade.nome_cidade == nome_cidade:
+                return True
 
 #* Funções
-
-# Função para verificar se a cidade existe
-def Verificar_Cidade_Existe(lista_cidades, nome_cidade):
-    for cidade in lista_cidades:
-        if cidade.nome_cidade == nome_cidade:
-            return True
 
 # Função para a entrada de uma cidade
 def Entrada_De_Cidade():
@@ -136,7 +140,7 @@ def Cadastrar_Cidade(grafo):
         if nome_cidade == "":
             continue
         else:
-            cidade_existe = Verificar_Cidade_Existe(grafo, nome_cidade)
+            cidade_existe = grafo.Verificar_Cidade_Existe(nome_cidade)
             
             if not cidade_existe:
                 print("Cadastrando cidade...")
