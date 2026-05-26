@@ -77,13 +77,8 @@ class Grafo:
             if cidade.nome_cidade == nome_cidade:
                 cidade.Info_Vizinhos()
     
-    # def Adicionar_Vizinho_Na_Cidade(self, nome_cidade):
-    #     for cidade in self.cidades:
-    #         if cidade.nome_cidade == nome_cidade:
-    #             cidade.Adicionar_Vizinho()
-    
     def Busca_Cidade_Por_Nome(self, nome_cidade):
-        for cidade in self.lista_cidades:
+        for cidade in self.cidades:
             if cidade.nome_cidade == nome_cidade:
                 return cidade
 
@@ -251,8 +246,8 @@ def Cadastrar_Conexao(grafo):
 
                 #TODO Testar
                 # Buscando os objetos destas cidades
-                cidade_1 = Retornar_Cidade_Usando_Nome(nome_cidade_1)
-                cidade_2 = Retornar_Cidade_Usando_Nome(nome_cidade_2)
+                cidade_1 = grafo.Busca_Cidade_Por_Nome(nome_cidade_1)
+                cidade_2 = grafo.Busca_Cidade_Por_Nome(nome_cidade_2)
                 
                 # Adicionando como vizinhos
                 cidade_1.Adicionar_Vizinho(cidade_2)
@@ -265,13 +260,7 @@ def Cadastrar_Conexao(grafo):
                 running = False
             except Exception as error:
                 print("\nOcorreu um erro inesperado, não foi possível terminar o cadastro.")
-                print(f"Mensagem de erro: {error}")
-
-# Função que retorna uma cidade do Grafo, recebendo o nome de uma cidade
-def Retornar_Cidade_Usando_Nome(grafo, nome_cidade):
-    for cidade in grafo.cidades:
-        if cidade.nome_cidade == nome_cidade:
-            return cidade
+                print(f"\nMensagem de erro: {error}")
 
 # Função para evitar a apresentação excessiva para o usuário
 def Continuar():
