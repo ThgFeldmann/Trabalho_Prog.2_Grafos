@@ -1,5 +1,4 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
-#TODO Adicionar Vizinhaça
 
 #* Classes
 
@@ -11,8 +10,8 @@ class Aresta:
         self.distancia = distancia
     
     def Info_Aresta(self):
-        print("-"*30)
-        print(f"{self.cidade_1}, {self.cidade_2}, {self.distancia}")
+        print(f"{self.cidade_1}, {self.cidade_2}, {self.distancia}km")
+        print("-"*15)
 
 # Classe Vértice (Cidade)
 class Vertice:
@@ -22,16 +21,15 @@ class Vertice:
         self.conexoes = []
 
     def Info_Vertice(self):
-        print("-"*30)
         print(f"Nome da cidade: {self.nome_cidade}")
         print(f"Quantidade de vizinhos: {len(self.vizinhanca)}")
         print(f"Quantidade de conexões: {len(self.conexoes)}")
+        print("-"*15)
 
     def Info_Vizinhos(self):
         print("-"*30)
         
         for vizinho in self.vizinhanca:
-            print("-"*15)
             vizinho.Info_Vertice()
     
     def Info_Conexoes(self):
@@ -48,7 +46,7 @@ class Vertice:
 
 # Classe Grafo (Mapa)
 class Grafo:
-    def __init__(self, cidades=[], conexoes=[]):
+    def __init__(self):
         self.cidades = []
         self.conexoes = []
     
@@ -66,7 +64,6 @@ class Grafo:
         print("-"*30)
         
         for conexao in self.conexoes:
-            print("-"*15)
             conexao.Info_Aresta()
     
         Continuar()
@@ -94,7 +91,7 @@ class Grafo:
 
 #* Funções
 
-# Função para a entrada de uma cidade
+# Função para a entrada do nome de uma cidade
 def Entrada_De_Cidade():
     try:
         cidade = input(": ")
@@ -192,7 +189,7 @@ def Cadastrar_Conexao(grafo):
                 if nome_cidade_1 == "":
                     continue
                 else:
-                    cidade_1_existe = Verificar_Cidade_Existe(lista_cidades, nome_cidade_1)
+                    cidade_1_existe = grafo.Verificar_Cidade_Existe(nome_cidade_1)
                     
                     if cidade_1_existe:
                         recebendo_valores = False
@@ -211,7 +208,7 @@ def Cadastrar_Conexao(grafo):
                 if nome_cidade_2 == "":
                     continue
                 else:
-                    cidade_2_existe = Verificar_Cidade_Existe(lista_cidades, nome_cidade_2)
+                    cidade_2_existe = grafo.Verificar_Cidade_Existe(nome_cidade_2)
                     
                     if cidade_2_existe:
                         recebendo_valores = False
@@ -265,6 +262,45 @@ def Cadastrar_Conexao(grafo):
             except Exception as error:
                 print("\nOcorreu um erro inesperado, não foi possível terminar o cadastro.")
                 print(f"\nMensagem de erro: {error}")
+
+#TODO Em desenvolvimento
+# Função para listar os vizinhos de uma cidade específica
+def Listar_Vizinhos(grafo):
+    running = True
+
+    while running:
+        print("-"*30)
+        print("Listagem de Vizinhos de uma Cidade\n")
+        nome_cidade = Entrada_De_Cidade()
+        
+        if nome_cidade == "":
+            continue
+        else:
+            cidade_existe = grafo.Verificar_Cidade_Existe(nome_cidade)
+            
+            if not cidade_existe:
+                print("")
+                
+                try:
+                    cidade = Vertice(nome_cidade)
+                    grafo.Cadastra_Cidade(cidade)
+                    
+                    print("\n")
+                    Continuar()
+                    
+                    running = False
+                except Exception as error:
+                    print("-"*30)
+                    print("Ocorreu um erro inesperado durante o cadastro da cidade.")
+                    print("Tente novamente.")
+                    Continuar()
+                    continue
+
+            else:
+                print("\nEsta cidade já existe na lista de cidades.")
+                print("Encerrando o cadastro...")
+                Continuar()
+                running = False
 
 # Função para evitar a apresentação excessiva para o usuário
 def Continuar():
@@ -332,6 +368,9 @@ if __name__ == '__main__':
         
         elif escolha == 4:
             grafo.Info_Conexoes()
+        
+        elif escolha == 5:
+            grafo.Listar_Vizinhanca_Da_Cidade()
         
         else:
             print("-"*30)
