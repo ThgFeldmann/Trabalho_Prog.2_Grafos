@@ -10,7 +10,7 @@ class Aresta:
         self.distancia = distancia
     
     def Info_Aresta(self):
-        print(f"{self.cidade_1}, {self.cidade_2}, {self.distancia}km")
+        print(f"{self.cidade_1}, {self.cidade_2}, {self.distancia:.1f}km")
         print("-"*15)
 
 # Classe Vértice (Cidade)
@@ -27,19 +27,26 @@ class Vertice:
         print("-"*15)
 
     def Info_Vizinhos(self):
+        #TODO Não está reconhecendo os nomes dos vizinhos na lista de conexoes
         print("-"*30)
-        lista_vizinhos = []
+
+        print(f"Quantidade na lista de vizinhos: {len(self.vizinhanca)}")
         
-        # Separando os vizinhos
         for vizinho in self.vizinhanca:
-            lista_vizinhos.append(vizinho)
+            print(f"Nome do vizinho: {vizinho.nome_cidade}")
+            
+        for conexao in self.conexoes:
+            print(conexao.cidade_1 in self.vizinhanca)
         
         # Buscando a distância entre esses vizinhos
-        for conexao in self.conexoes:
-            if conexao.cidade_1 in lista_vizinhos: # Se 'cidade_1' for vizinho
-                print(f"{conexao.cidade_1} - {conexao.distancia}")
-            elif conexao.cidade_2 in lista_vizinhos: # Se 'cidade_2' for vizinho
-                print(f"{conexao.cidade_2} - {conexao.distancia}")
+        # for conexao in self.conexoes:
+        #     print(f"Cidades da conexão: 1-{conexao.cidade_1}, 2-{conexao.cidade_2}")
+        #     print(f"Cidade 1 está na vizinhaça: {conexao.cidade_1 in self.vizinhanca}")
+
+            # if conexao.cidade_1 in lista_vizinhos: # Se 'cidade_1' for vizinho
+            #     print(f"{conexao.cidade_1} - {conexao.distancia}")
+            # elif conexao.cidade_2 in lista_vizinhos: # Se 'cidade_2' for vizinho
+            #     print(f"{conexao.cidade_2} - {conexao.distancia}")
     
     def Info_Conexoes(self):
         print("-"*30)
@@ -64,7 +71,6 @@ class Grafo:
         lista_alfabetica = sorted(self.cidades, key=lambda cidade: cidade.nome_cidade)
         
         for cidade in lista_alfabetica:
-            print("-"*15)
             cidade.Info_Vertice()
 
         Continuar()
@@ -91,6 +97,7 @@ class Grafo:
 
         for cidade in self.cidades:
             if cidade.nome_cidade == nome_cidade:
+                print(f"Cidade: {nome_cidade}")
                 cidade.Info_Vizinhos()
     
     def Busca_Cidade_Por_Nome(self, nome_cidade):
@@ -250,9 +257,18 @@ def Cadastrar_Conexao(grafo):
                     Continuar()
                     continue
 
-                if not distancia or distancia < 0: # Se 'distância' não existe ou se for negativo
-                    print("Não foi possível continuar com o cadastro.")
-                    print("Verifique se: A entrada possui valores ou a cidade existe na lista local.")
+                if not distancia: # Se 'distância' não existe
+                    print("\nNão foi possível continuar com o cadastro.")
+                    print("Insira algum valor positivo como a distância.")
+                    Continuar()
+                    continue
+                
+                elif distancia < 0: # Se 'distância' for um valor negativo
+                    print("\nNão foi possível continuar com o cadastro.")
+                    print("Distânia não pode ser um valor negativo.")
+                    Continuar()
+                    continue
+                
                 else:
                     recebendo_valores = False
 
@@ -335,7 +351,7 @@ if __name__ == '__main__':
     while running:
         print()
         print("-"*30)
-        print("Sistema Grafo")
+        print("\tSistema Grafo")
         print("-"*30)
 
         print("Escolha a opção desejada:\n")
