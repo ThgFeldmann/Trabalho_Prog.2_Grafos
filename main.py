@@ -1,4 +1,5 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
+#TODO Está sendo permitido a criação de conexões com as mesmas cidades ou idênticas
 
 #* Classes
 
@@ -27,26 +28,22 @@ class Vertice:
         print("-"*15)
 
     def Info_Vizinhos(self):
-        #TODO Não está reconhecendo os nomes dos vizinhos na lista de conexoes
         print("-"*30)
 
-        print(f"Quantidade na lista de vizinhos: {len(self.vizinhanca)}")
+        # Lista de nomes dos vizinhos
+        lista_nome_vizinhos = []
         
+        # Buscando os nomes dos vizinhos e adicionando na lista
         for vizinho in self.vizinhanca:
-            print(f"Nome do vizinho: {vizinho.nome_cidade}")
-            
-        for conexao in self.conexoes:
-            print(conexao.cidade_1 in self.vizinhanca)
+            lista_nome_vizinhos.append(vizinho.nome_cidade)
         
-        # Buscando a distância entre esses vizinhos
-        # for conexao in self.conexoes:
-        #     print(f"Cidades da conexão: 1-{conexao.cidade_1}, 2-{conexao.cidade_2}")
-        #     print(f"Cidade 1 está na vizinhaça: {conexao.cidade_1 in self.vizinhanca}")
-
-            # if conexao.cidade_1 in lista_vizinhos: # Se 'cidade_1' for vizinho
-            #     print(f"{conexao.cidade_1} - {conexao.distancia}")
-            # elif conexao.cidade_2 in lista_vizinhos: # Se 'cidade_2' for vizinho
-            #     print(f"{conexao.cidade_2} - {conexao.distancia}")
+        # Olhando em conexões
+        for conexao in self.conexoes:
+            # Verificando se algum nome da conexão ('cidade_1' ou 'cidade_2'), são vizinhos
+            if conexao.cidade_1 in lista_nome_vizinhos: # Se 'cidade_1' for vizinho
+                print(f"{conexao.cidade_1} - {conexao.distancia}")
+            elif conexao.cidade_2 in lista_nome_vizinhos: # Se 'cidade_2' for vizinho
+                print(f"{conexao.cidade_2} - {conexao.distancia}")
     
     def Info_Conexoes(self):
         print("-"*30)
@@ -90,14 +87,10 @@ class Grafo:
         self.conexoes.append(nova_conexao)
     
     def Listar_Vizinhanca_Da_Cidade(self, nome_cidade):
-        #TODO Usar lista de vizinhos
-        #TODO deve listar neste formato "<nome vizinho> - <distancia>"
-        #TODO deve ser ordenado pela menor distância
-        #TODO Usar lista de conexões
+        print(f"Vizinhos de: {nome_cidade}")
 
         for cidade in self.cidades:
             if cidade.nome_cidade == nome_cidade:
-                print(f"Cidade: {nome_cidade}")
                 cidade.Info_Vizinhos()
     
     def Busca_Cidade_Por_Nome(self, nome_cidade):
@@ -184,6 +177,7 @@ def Cadastrar_Cidade(grafo):
                 Continuar()
                 running = False
 
+#TODO Adicionar verificação de duplicata
 # Função de cadastro de uma conexão
 def Cadastrar_Conexao(grafo):
     running = True
@@ -296,7 +290,6 @@ def Cadastrar_Conexao(grafo):
                 print("\nOcorreu um erro inesperado, não foi possível terminar o cadastro.")
                 print(f"\nMensagem de erro: {error}")
 
-#TODO Em desenvolvimento
 # Função para listar os vizinhos de uma cidade específica
 def Listar_Vizinhos(grafo):
     running = True
