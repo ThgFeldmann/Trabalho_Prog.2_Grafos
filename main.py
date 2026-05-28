@@ -125,7 +125,7 @@ def Entrada_De_Cidade():
     try:
         cidade = input(": ")
         
-        if cidade == "": # Se a entrada for vazia
+        if cidade == "" or cidade == None or cidade == " ": # Se a entrada for vazia
             print("-"*30)
             print("A entrada não pode ficar vazia, insira algum valor.")
             Continuar()
@@ -163,7 +163,7 @@ def Cadastrar_Cidade(grafo):
         
         nome_cidade = Entrada_De_Cidade()
         
-        if nome_cidade == "":
+        if nome_cidade == "" or nome_cidade == None or nome_cidade == " ":
             continue
         else:
             cidade_existe = grafo.Verificar_Cidade_Existe(nome_cidade)
@@ -187,6 +187,7 @@ def Cadastrar_Cidade(grafo):
                     continue
 
             else:
+                print("-"*30)
                 print("\nEsta cidade já existe na lista de cidades.")
                 print("Encerrando o cadastro...")
                 Continuar()
@@ -204,7 +205,7 @@ def Cadastrar_Conexao(grafo):
         
         if len(lista_cidades) < 2: # Se não existir Cidades o suficiente
             print("-"*30)
-            print("\nNão há cidades suficientes para criar uma conexão.")
+            print("Não há cidades suficientes para criar uma conexão.")
             print("Adicione mais cidades antes desta conexão.\n")
             Continuar()
             running = False
@@ -223,7 +224,8 @@ def Cadastrar_Conexao(grafo):
                     if cidade_1_existe:
                         recebendo_valores = False
                     else:
-                        print("\nNão foi possível continuar com o cadastro.")
+                        print("-"*30)
+                        print("Não foi possível continuar com o cadastro.")
                         print("Esta cidade não existe na lista local.")
                         Continuar()
                         continue
@@ -237,7 +239,8 @@ def Cadastrar_Conexao(grafo):
                 if nome_cidade_2 == "":
                     continue
                 elif nome_cidade_2 == nome_cidade_1: # Se este nome foi inserido no campo anterior
-                    print("\nNão foi possível continuar com o cadastro.")
+                    print("-"*30)
+                    print("Não foi possível continuar com o cadastro.")
                     print("Este nome já foi inserido no cadastro.")
                     print("\nTente novamente usando nomes diferentes.")
                     Continuar()
@@ -249,6 +252,7 @@ def Cadastrar_Conexao(grafo):
                     if cidade_2_existe:
                         recebendo_valores = False
                     else:
+                        print("-"*30)
                         print("Não foi possível continuar com o cadastro.")
                         print("Esta cidade não existe na lista local.")
                         Continuar()
@@ -273,13 +277,15 @@ def Cadastrar_Conexao(grafo):
                     continue
 
                 if not distancia: # Se 'distância' não existe
-                    print("\nNão foi possível continuar com o cadastro.")
+                    print("-"*30)
+                    print("Não foi possível continuar com o cadastro.")
                     print("Insira algum valor positivo como a distância.")
                     Continuar()
                     continue
                 
                 elif distancia < 0: # Se 'distância' for um valor negativo
-                    print("\nNão foi possível continuar com o cadastro.")
+                    print("-"*30)
+                    print("Não foi possível continuar com o cadastro.")
                     print("Distânia não pode ser um valor negativo.")
                     Continuar()
                     continue
@@ -312,7 +318,8 @@ def Cadastrar_Conexao(grafo):
                     running = False
                 
                 else: # Se a conexão já existe no Grafo
-                    print("\nNão será possível cadastrar esta conexão, por uma das razões abaixo:")
+                    print("-"*30)
+                    print("Não será possível cadastrar esta conexão, por uma das razões abaixo:")
                     print("- Ela já existe no Grafo;")
                     print("- Ela utiliza cidades que já possuem uma conexão entre sí.")
                     
