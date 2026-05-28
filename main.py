@@ -1,4 +1,8 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
+#TODO Integração com um arquivo
+#TODO Funcionalidades:
+# - Carregar arquivo
+# - Atualizar arquivo
 
 #* Classes
 
@@ -365,6 +369,18 @@ def Listar_Vizinhos(grafo):
                 Continuar()
                 running = False
 
+# Função para carregar os dados do arquivo para a lista local
+def Carregar_Arquivo(grafo):
+    running = True
+
+    while running:
+        with open("dados.csv", "r", encoding="utf-8") as arquivo:
+            for linha in arquivo:
+                
+        
+        running = False
+
+
 # Função para evitar a apresentação excessiva para o usuário
 def Continuar():
     print("-"*30)
@@ -399,6 +415,8 @@ if __name__ == '__main__':
         print("3 - Listar cidades")
         print("4 - Listar conexôes")
         print("5 - Listar cidades vizinhas")
+        print("6 - Carregar arquivo")
+        print("7 - Atualizar arquivo")
         print("0 - Sair")
         print("10 - TESTE")
 
