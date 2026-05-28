@@ -1,5 +1,4 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
-#TODO Está sendo permitido a criação de conexões com as mesmas cidades ou idênticas
 
 #* Classes
 
@@ -102,6 +101,22 @@ class Grafo:
         for cidade in self.cidades:
             if cidade.nome_cidade == nome_cidade:
                 return True
+    
+    def Verificar_Conexao_Existe(self, nova_conexao):
+        # O retorno deste método é um booleano: 'True' se a conexão já existe e 'False' se não existe
+        
+        # Realizando verificações para descobrir se a conexão já existe no Grafo
+        for conexao in self.conexoes:
+            if conexao == nova_conexao: # Se a conexão for idêntica
+                return True
+            elif (conexao.cidade_1 == nova_conexao.cidade_1) and (conexao.cidade_2 == nova_conexao.cidade_2): # Se as cidades forem idênticas
+                return True
+
+            elif (nova_conexao.cidade_1 == conexao.cidade_2) and (nova_conexao.cidade_2 == conexao.cidade_1): # Se as cidades forem idênticas porém invertidas
+                return True
+
+        # Se não houver erros
+        return False
 
 #* Funções
 
@@ -177,7 +192,6 @@ def Cadastrar_Cidade(grafo):
                 Continuar()
                 running = False
 
-#TODO Adicionar verificação de duplicata
 # Função de cadastro de uma conexão
 def Cadastrar_Conexao(grafo):
     running = True
@@ -222,6 +236,13 @@ def Cadastrar_Conexao(grafo):
                 
                 if nome_cidade_2 == "":
                     continue
+                elif nome_cidade_2 == nome_cidade_1: # Se este nome foi inserido no campo anterior
+                    print("\nNão foi possível continuar com o cadastro.")
+                    print("Este nome já foi inserido no cadastro.")
+                    print("\nTente novamente usando nomes diferentes.")
+                    Continuar()
+                    continue
+                    
                 else:
                     cidade_2_existe = grafo.Verificar_Cidade_Existe(nome_cidade_2)
                     
@@ -269,26 +290,41 @@ def Cadastrar_Conexao(grafo):
             try:
                 conexao = Aresta(nome_cidade_1, nome_cidade_2, distancia)
 
-                #TODO Testar
-                # Buscando os objetos destas cidades no Grafo
-                cidade_1 = grafo.Busca_Cidade_Por_Nome(nome_cidade_1)
-                cidade_2 = grafo.Busca_Cidade_Por_Nome(nome_cidade_2)
+                # Verificando se a conexão já existe
+                conexao_existe = grafo.Verificar_Conexao_Existe(conexao)
+                
+                if not conexao_existe: # Se a conexão não existe no grafo
+                    # Buscando os objetos destas cidades no Grafo
+                    cidade_1 = grafo.Busca_Cidade_Por_Nome(nome_cidade_1)
+                    cidade_2 = grafo.Busca_Cidade_Por_Nome(nome_cidade_2)
 
-                # Adicionando Vizinhos
-                cidade_1.Adicionar_Vizinho(cidade_2)
-                cidade_2.Adicionar_Vizinho(cidade_1)
+                    # Adicionando Vizinhos
+                    cidade_1.Adicionar_Vizinho(cidade_2)
+                    cidade_2.Adicionar_Vizinho(cidade_1)
 
-                cidade_1.Adicionar_Conexao(conexao)
-                cidade_2.Adicionar_Conexao(conexao)
+                    cidade_1.Adicionar_Conexao(conexao)
+                    cidade_2.Adicionar_Conexao(conexao)
 
-                # Adicionando conexão ao grafo, na lista de conexões
-                grafo.Cadastra_Conexao(conexao)
-                print("\nCadastro realizado com sucesso.")
-                Continuar()
-                running = False
+                    # Adicionando conexão ao grafo, na lista de conexões
+                    grafo.Cadastra_Conexao(conexao)
+                    print("\nCadastro realizado com sucesso.")
+                    Continuar()
+                    running = False
+                
+                else: # Se a conexão já existe no Grafo
+                    print("\nNão será possível cadastrar esta conexão, por uma das razões abaixo:")
+                    print("- Ela já existe no Grafo;")
+                    print("- Ela utiliza cidades que já possuem uma conexão entre sí.")
+                    
+                    print("\nEste cadastro foi cancelado, retornando ao menu...")
+                    Continuar()
+                    running = False
+
             except Exception as error:
                 print("\nOcorreu um erro inesperado, não foi possível terminar o cadastro.")
                 print(f"\nMensagem de erro: {error}")
+                Continuar()
+                continue
 
 # Função para listar os vizinhos de uma cidade específica
 def Listar_Vizinhos(grafo):
@@ -332,6 +368,9 @@ def Test(grafo):
     grafo.cidades.append(Vertice("Test"))
     grafo.cidades.append(Vertice("Teste"))
     grafo.cidades.append(Vertice("Cidade"))
+    
+    grafo.conexoes.append(Aresta("Test", "Teste", 20.2))
+    grafo.conexoes.append(Aresta("Cidade", "Test", 60))
     
     Continuar()
 
