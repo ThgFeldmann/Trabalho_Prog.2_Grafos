@@ -1,5 +1,4 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
-#TODO A listagem de vizinhos deve mostrar na ordem de menor distancia
 #TODO Cadastro de conexões, duas mensagems de erro estão sendo mostradas juntas.
 
 #* Classes
@@ -31,6 +30,9 @@ class Vertice:
     def Info_Vizinhos(self):
         print("-"*30)
 
+        # Lista onde serão armazenados dicionários: vizinho = {"nome": nome_vizinho, "distancia": distancia}
+        lista_vizinhos = []
+
         # Lista de nomes dos vizinhos
         lista_nome_vizinhos = []
         
@@ -38,13 +40,20 @@ class Vertice:
         for vizinho in self.vizinhanca:
             lista_nome_vizinhos.append(vizinho.nome_cidade)
         
-        # Olhando em conexões
+        # Buscando as distâncias
         for conexao in self.conexoes:
             # Verificando se algum nome da conexão ('cidade_1' ou 'cidade_2'), são vizinhos
             if conexao.cidade_1 in lista_nome_vizinhos: # Se 'cidade_1' for vizinho
-                print(f"{conexao.cidade_1} - {conexao.distancia}")
+                lista_vizinhos.append({"nome": conexao.cidade_1, "distancia": conexao.distancia})
             elif conexao.cidade_2 in lista_nome_vizinhos: # Se 'cidade_2' for vizinho
-                print(f"{conexao.cidade_2} - {conexao.distancia}")
+                lista_vizinhos.append({"nome": conexao.cidade_2, "distancia": conexao.distancia})
+        
+        # Ordenando a lista pela distância dos vizinhos. Ordem ascendente
+        lista_ordenada = sorted(lista_vizinhos, key=lambda vizinho: vizinho["distancia"])
+        
+        # Mostrando os vizinhos, já ordenados
+        for vizinho in lista_ordenada:
+            print(f"{vizinho["nome"]} - {vizinho["distancia"]}")
     
     def Info_Conexoes(self):
         print("-"*30)
@@ -202,6 +211,7 @@ def Cadastrar_Cidade(grafo):
                 Continuar()
                 running = False
 
+#TODO Duas mensagens de erro são mostradas
 # Função de cadastro de uma conexão
 def Cadastrar_Conexao(grafo):
     running = True
