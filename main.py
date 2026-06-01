@@ -1,5 +1,4 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
-#TODO Cadastro de conexões, duas mensagems de erro estão sendo mostradas juntas.
 
 #* Classes
 
@@ -211,7 +210,6 @@ def Cadastrar_Cidade(grafo):
                 Continuar()
                 running = False
 
-#TODO Duas mensagens de erro são mostradas
 # Função de cadastro de uma conexão
 def Cadastrar_Conexao(grafo):
     running = True
