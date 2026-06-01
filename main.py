@@ -1,9 +1,6 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
 #TODO A listagem de vizinhos deve mostrar na ordem de menor distancia
-#TODO Integração com um arquivo
-#TODO Funcionalidades:
-# - Carregar arquivo
-# - Atualizar arquivo
+#TODO Cadastro de conexões, duas mensagems de erro estão sendo mostradas juntas.
 
 #* Classes
 
@@ -455,6 +452,30 @@ def Carregar_Arquivo(grafo):
 
         Continuar()
 
+# Função para atualizar os dados do arquivo, usando a lista local
+def Atualizar_Arquivo(grafo):
+    running = True
+
+    try:
+        while running:
+            print("-"*30)
+            
+            # Abrindo o arquivo para a escrita de dados
+            with open('dados.csv', 'w', encoding="utf-8") as arquivo:
+                # Lendo todas as conexões do Grafo
+                for conexao in grafo.conexoes:
+                    # Escrevendo a conexão no arquivo
+                    arquivo.write(f"{conexao.cidade_1},{conexao.cidade_2},{conexao.distancia}\n")
+            
+            running = False
+
+        print("\nArquivo Atualizado")
+    except Exception as error:
+        print("\nOcorreu um erro inesperado ao atualizar o arquivo.")
+        print("Verifique os dados e tente novamente.")
+        print(f"\nMensagem de erro: {error}")
+
+    Continuar()
 
 # Função para evitar a apresentação excessiva para o usuário
 def Continuar():
@@ -533,10 +554,21 @@ if __name__ == '__main__':
             Listar_Vizinhos(grafo)
         
         elif escolha == 6:
+            # Apagando os dados do Grafo
+            grafo = None
+            # Criando um novo grafo, sem dados
+            grafo = Grafo()
+
             Carregar_Arquivo(grafo)
         
         elif escolha == 7:
-            print("Atualizar arquivo")
+            if len(grafo.conexoes) <= 0:
+                print("-"*30)
+                print("O Grafo não possui nenhuma conexão cadastrada.")
+                print("Não será possível atualizar o arquivo.")
+                Continuar()
+            else:
+                Atualizar_Arquivo(grafo)
         
         else:
             print("-"*30)
