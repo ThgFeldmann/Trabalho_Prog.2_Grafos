@@ -160,8 +160,8 @@ def Entrada_De_Cidade():
             # retornando o nome da cidade em 'title'
             return cidade.title()
         else:
-            # retornando 'None' caso a cidade não seja válida
-            return None
+            # retornando uma 'string' vazia caso o valor seja inválido
+            return ''
 
     except Exception as error:
         print("-"*30)
@@ -498,8 +498,8 @@ def Test(grafo):
     grafo.cidades.append(Vertice("Teste"))
     grafo.cidades.append(Vertice("Cidade"))
     
-    grafo.conexoes.append(Aresta("Test", "Teste", 20.2))
-    grafo.conexoes.append(Aresta("Cidade", "Test", 60))
+    # grafo.conexoes.append(Aresta("Test", "Teste", 20.2))
+    # grafo.conexoes.append(Aresta("Cidade", "Test", 60))
     
     Continuar()
 
