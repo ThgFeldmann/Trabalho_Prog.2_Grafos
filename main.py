@@ -1,4 +1,5 @@
 # Exemplo de um dado: "Porto Alegre, Pelotas, 291.3km"
+#TODO A listagem de vizinhos deve mostrar na ordem de menor distancia
 #TODO Integração com um arquivo
 #TODO Funcionalidades:
 # - Carregar arquivo
@@ -124,31 +125,38 @@ class Grafo:
 
 #* Funções
 
+# Função para validar o nome de uma cidade, retorna um booleano para o resultado
+def Validar_Nome_Cidade(nome_cidade):
+    if nome_cidade == "" or nome_cidade == None or nome_cidade == " ": # Se o nome for vazio
+        print("-"*30)
+        print("O nome da cidade não pode ficar vazio, insira algum valor.")
+        Continuar()
+        return False
+    else:
+        # Verificando se tem algum número no nome da cidade inserido
+        tem_numero = any(letra.isdigit() for letra in nome_cidade)
+        
+        if tem_numero == True: # Se tiver algum número
+            print("-"*30)
+            print("Erro, o nome da cidade deve conter apenas letras.")
+            Continuar()
+
+        else: # Se estiver correto
+            return True
+
 # Função para a entrada do nome de uma cidade
 def Entrada_De_Cidade():
     try:
         cidade = input(": ")
+        cidade_e_valida = Validar_Nome_Cidade(cidade)
         
-        if cidade == "" or cidade == None or cidade == " ": # Se a entrada for vazia
-            print("-"*30)
-            print("A entrada não pode ficar vazia, insira algum valor.")
-            Continuar()
-            return ""
+        if cidade_e_valida: # Se o nome da cidade for válido
+            # retornando o nome da cidade em 'title'
+            return cidade.title()
         else:
-            # Verificando se tem algum número na entrada
-            tem_numero = any(letra.isdigit() for letra in cidade)
-            
-            if tem_numero == True: # Se tiver número
-                raise ValueError
-            else: # Se não tiver número
-                cidade = cidade.title()
-                #* Retornando a cidade
-                return cidade
+            # retornando 'None' caso a cidade não seja válida
+            return None
 
-    except ValueError:
-        print("-"*30)
-        print("Erro na entrada. A entrada deve conter apenas letras.")
-        Continuar()
     except Exception as error:
         print("-"*30)
         print("Erro inesperado na entrada. Tente novamente.")
@@ -372,13 +380,80 @@ def Listar_Vizinhos(grafo):
 # Função para carregar os dados do arquivo para a lista local
 def Carregar_Arquivo(grafo):
     running = True
+    contador_linhas = 0
+    contador_cadastros = 0
 
     while running:
+        print("-"*30)
         with open("dados.csv", "r", encoding="utf-8") as arquivo:
-            for linha in arquivo:
-                
+                for linha in arquivo:
+                    try:
+                        contador_linhas += 1
+                        # Normalizando a linha para uso
+                        linha = linha.strip().split(",")
+                        linha_cidade_1 = linha[0]
+                        cidade_e_valida = Validar_Nome_Cidade(linha_cidade_1)
+                        
+                        if cidade_e_valida:
+                            linha_cidade_1 = linha_cidade_1.title()
+
+                            linha_cidade_2 = linha[1]
+                            cidade_e_valida = Validar_Nome_Cidade(linha_cidade_2)
+                            
+                            if cidade_e_valida:
+                                linha_cidade_2 = linha_cidade_2.title()
+                                
+                                linha_distancia = float(linha[2].replace(",", "."))
+                                
+                                # Criando a conexão
+                                conexao = Aresta(linha_cidade_1, linha_cidade_2, linha_distancia)
+                                
+                                conexao_existe = grafo.Verificar_Conexao_Existe(conexao)
+                                
+                                if not conexao_existe: # Se a coneão não existe no Grafo
+                                    # Criando as cidades
+                                    cidade_1 = Vertice(linha_cidade_1)
+                                    cidade_2 = Vertice(linha_cidade_2)
+                                    
+                                    # Adicionando a conexão nas cidades
+                                    cidade_1.Adicionar_Conexao(conexao)
+                                    cidade_2.Adicionar_Conexao(conexao)
+                                    
+                                    # Adicionando as cidades como vizinhas
+                                    cidade_1.Adicionar_Vizinho(cidade_2)
+                                    cidade_2.Adicionar_Vizinho(cidade_1)
+                                    
+                                    # Adicionando os objetos no Grafo
+                                    grafo.Cadastra_Cidade(cidade_1)
+                                    grafo.Cadastra_Cidade(cidade_2)
+                                    grafo.Cadastra_Conexao(conexao)
+
+                                    contador_cadastros += 1
+
+                            else:
+                                raise ValueError
+                            
+                        else:
+                            raise ValueError
+
+                    except ValueError:
+                        print("-"*30)
+                        print(f"Ocorreu um erro na linha: {contador_linhas}")
+                        print("Verifique os valores da linha.")
+                        print("A leitura do arquivo vai continuar.")
+                        Continuar()
+                        continue
         
         running = False
+        print()
+        if contador_cadastros <= 0:
+            print("Nenhuma conexão foi carregada.")
+        elif contador_cadastros == 1:
+            print(f"Foi carregada: {contador_cadastros} conexão.")
+        else:
+            print(f"Foram carregadas: {contador_cadastros} conexões.")
+
+        Continuar()
 
 
 # Função para evitar a apresentação excessiva para o usuário
@@ -456,6 +531,12 @@ if __name__ == '__main__':
         
         elif escolha == 5:
             Listar_Vizinhos(grafo)
+        
+        elif escolha == 6:
+            Carregar_Arquivo(grafo)
+        
+        elif escolha == 7:
+            print("Atualizar arquivo")
         
         else:
             print("-"*30)
