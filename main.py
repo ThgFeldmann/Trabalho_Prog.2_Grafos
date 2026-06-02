@@ -490,17 +490,6 @@ def Continuar():
     print("-"*30)
     input("Continuar...")
 
-# Função de teste, vai ser removida futuramente
-def Test(grafo):
-    grafo.cidades.append(Vertice("Test"))
-    grafo.cidades.append(Vertice("Teste"))
-    grafo.cidades.append(Vertice("Cidade"))
-    
-    # grafo.conexoes.append(Aresta("Test", "Teste", 20.2))
-    # grafo.conexoes.append(Aresta("Cidade", "Test", 60))
-    
-    Continuar()
-
 #* Função Principal
 if __name__ == '__main__':
     grafo = Grafo()
@@ -522,7 +511,6 @@ if __name__ == '__main__':
         print("6 - Carregar arquivo")
         print("7 - Atualizar arquivo")
         print("0 - Sair")
-        print("10 - TESTE")
 
         try:
             escolha = int(input("\n: "))
@@ -538,10 +526,7 @@ if __name__ == '__main__':
             Continuar()
             continue
         
-        if escolha == 10:
-            Test(grafo)
-        
-        elif escolha == 0:
+        if escolha == 0:
             print("-"*30)
             print("Saindo...")
             Continuar()
